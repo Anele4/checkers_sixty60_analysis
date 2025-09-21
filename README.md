@@ -1,53 +1,60 @@
 
-
-
-# ☕ Coffee Shop Sales Analysis
+# 🛒 Checkers Sixty60 E-Commerce Sales Analysis
 
 ## 📌 Overview
-This end-to-end project analyzes coffee shop sales data to uncover trends in customer behavior, product performance, and outlet engagement. Built using SQL, Excel, Power Query, and Power BI, the dashboard delivers actionable insights for retail decision-makers.
+This end-to-end project analyzes sales performance across the Checkers Sixty60 e-commerce platform. Using SQL, Excel, Power Query, and Power BI, the dashboard uncovers trends in outlet performance, product categories, fat content segmentation, and customer ratings. The goal is to deliver actionable insights for retail strategy and operational optimization.
 
 ---
 
 ## 🎯 Objective
-To transform raw transactional data into a dynamic, interactive dashboard that highlights sales performance, product category trends, and outlet-level metrics.
+To transform raw transactional data into a dynamic dashboard that highlights key performance indicators, outlet segmentation, and product-level insights for the Checkers Sixty60 platform.
 
 ---
 
 ## 🛠️ Tools Used
-- **SQL** – Data extraction, cleaning, and aggregation  
+- **SQL** – Data cleaning, aggregation, and KPI extraction  
 - **Excel** – Preprocessing and validation  
 - **Power Query** – Data transformation  
 - **Power BI** – Dashboard design and visualization  
-- **Python** – Exploratory analysis and charting (mini projects)
+- **DAX** – KPI calculations and matrix logic  
+- **Python** – Exploratory analysis (optional mini projects)
 
 ---
 
 ## 📊 Key Metrics & Visuals
 
 ### 🔹 Top KPIs
-- **Total Sales**: `$76.15K` (↓ 6.8% vs LM)
-- **Total Orders**: `16,359` (↓ 5.5% vs LM)
-- **Total Quantity Sold**: `23,550` (↓ 5.3% vs LM)
+- **Total Sales**: R1M  
+- **Average Sales**: R142  
+- **Number of Items**: 5,938  
+- **Average Rating**: 4.0
 
-### 🔹 Product Category Breakdown
-| Category   | Sales     | Quantity |
-|------------|-----------|----------|
-| Coffee     | $33.41K   | 9.91K    |
-| Breakfast  | $14.56K   | 3.91K    |
-| Sandwich   | $10.15K   | 2.73K    |
-| Tea        | $6.23K    | 2.13K    |
-| Pastry     | $5.32K    | 2.01K    |
-| Other      | $6.48K    | 2.84K    |
+### 🔹 Fat Content Breakdown (Donut Chart)
+- **Low Fat** vs **Regular Fat** segmentation
+- Sales distribution by fat content across outlet locations
 
-### 🔹 Store Performance
-- **Store A**: $27.25K (↓ 7.2% vs LM)  
-- **Store B**: $24.18K (↓ 4.8% vs LM)  
-- **Store C**: $24.72K (↓ 8.1% vs LM)
+### 🔹 Item Type Performance (Bar Chart)
+- Fresh Milk, Flavored Milk, Yogurt, Butter, etc.
+- Sales and quantity breakdown by product category
 
-### 📸 Screenshots
-![Dashboard Overview]<img width="665" height="421" alt="image" src="https://github.com/user-attachments/assets/00440afa-bc1c-4b93-94f8-37cd281b1568" />
-![Donut Chart Breakdown]<img width="239" height="184" alt="image" src="https://github.com/user-attachments/assets/9d47b83f-7490-47d0-a450-bd6e835c5c25" /> 
-![Donut Chart Breakdown]<img width="237" height="179" alt="image" src="https://github.com/user-attachments/assets/c487a365-7a80-427e-a9d0-8dc1d522865b" />
+### 🔹 Outlet Size Distribution (Donut Chart)
+- Small, Medium, Large outlet segmentation
+- Sales contribution by outlet size
+
+### 🔹 Outlet Location Performance (Bar Chart)
+- KZN, WC, GP, EC regions
+- Sales trends and regional comparisons
+
+### 🔹 Matrix Card: Outlet Type Metrics
+- Total Sales, Avg Sales, No. of Items, Avg Rating, Item Visibility
+- Outlet Type comparison across all KPIs
+
+---
+
+## 📸 Screenshots
+![Dashboard Overview] <img width="793" height="395" alt="image" src="https://github.com/user-attachments/assets/9ea94e00-10c0-441e-a870-51a58edfb0fb" />
+![Fat Content Donut]<img width="301" height="206" alt="image" src="https://github.com/user-attachments/assets/dc3c3c99-654e-436c-9ba7-7bf663cf7a2e" />
+![Outlet Matrix Card]<img width="215" height="352" alt="image" src="https://github.com/user-attachments/assets/67c7dbf7-d5ae-4604-b794-861836a5a08f" />
 
 
 ---
@@ -56,7 +63,7 @@ To transform raw transactional data into a dynamic, interactive dashboard that h
 
 ### 🔹 Data Cleaning
 ```sql
-UPDATE blinkit_data
+UPDATE sixty60_data_final
 SET Item_Fat_Content =
   CASE
     WHEN Item_Fat_Content IN ('LF', 'low fat') THEN 'Low Fat'
@@ -65,56 +72,80 @@ SET Item_Fat_Content =
   END;
 ```
 
-### 🔹 KPIs
+### 🔹 KPI Calculations
 ```sql
-SELECT CAST(SUM(Total_Sales) / 1000000.0 AS DECIMAL(10,2)) AS Total_Sales_Million FROM blinkit_data;
-SELECT CAST(AVG(Total_Sales) AS INT) AS Avg_Sales FROM blinkit_data;
-SELECT COUNT(*) AS No_of_Orders FROM blinkit_data;
-SELECT CAST(AVG(Rating) AS DECIMAL(10,1)) AS Avg_Rating FROM blinkit_data;
+SELECT CAST(SUM(Total_Sales) / 1000000.0 AS DECIMAL(10,2)) AS Total_Sales_Million FROM sixty60_data_final;
+SELECT CAST(AVG(Total_Sales) AS DECIMAL(10,1)) AS Avg_Sales FROM sixty60_data_final;
+SELECT COUNT(*) AS No_of_Orders FROM sixty60_data_final;
+SELECT CAST(AVG(Rating) AS DECIMAL(10,0)) AS Avg_Rating FROM sixty60_data_final;
 ```
 
-### 🔹 Pivoted Sales by Fat Content
+### 🔹 Fat Content by Outlet Location
 ```sql
 SELECT Outlet_Location_Type,
-  ISNULL([Low Fat], 0) AS Low_Fat,
-  ISNULL([Regular], 0) AS Regular
-FROM (
-  SELECT Outlet_Location_Type, Item_Fat_Content,
-         CAST(SUM(Total_Sales) AS DECIMAL(10,2)) AS Total_Sales
-  FROM blinkit_data
-  GROUP BY Outlet_Location_Type, Item_Fat_Content
-) AS SourceTable
-PIVOT (
-  SUM(Total_Sales)
-  FOR Item_Fat_Content IN ([Low Fat], [Regular])
-) AS PivotTable
+  CAST(SUM(CASE WHEN Item_Fat_Content = 'Low Fat' THEN Total_Sales ELSE 0 END) AS DECIMAL(10,2)) AS Low_Fat,
+  CAST(SUM(CASE WHEN Item_Fat_Content = 'Regular' THEN Total_Sales ELSE 0 END) AS DECIMAL(10,2)) AS Regular
+FROM sixty60_data_final
+GROUP BY Outlet_Location_Type
 ORDER BY Outlet_Location_Type;
+```
+
+### 🔹 Sales by Outlet Size
+```sql
+SELECT Outlet_Size,
+  CAST(SUM(Total_Sales) AS DECIMAL(10,2)) AS Total_Sales,
+  CAST((SUM(Total_Sales) * 100.0 / SUM(SUM(Total_Sales)) OVER()) AS DECIMAL(10,2)) AS Sales_Percentage
+FROM sixty60_data_final
+GROUP BY Outlet_Size
+ORDER BY Total_Sales DESC;
+```
+
+### 🔹 All Metrics by Outlet Type
+```sql
+SELECT Outlet_Type,
+  CAST(SUM(Total_Sales) AS DECIMAL(10,2)) AS Total_Sales,
+  CAST(AVG(Total_Sales) AS DECIMAL(10,0)) AS Avg_Sales,
+  COUNT(*) AS No_Of_Items,
+  CAST(AVG(Rating) AS DECIMAL(10,2)) AS Avg_Rating,
+  CAST(AVG(Item_Visibility) AS DECIMAL(10,2)) AS Item_Visibility
+FROM sixty60_data
+GROUP BY Outlet_Type
+ORDER BY Total_Sales DESC;
 ```
 
 ---
 
 ## 🧠 Insights & Takeaways
-- **Coffee** is the top-selling category, contributing over 40% of total revenue.
-- **Weekday sales** outperform weekends by nearly 3x.
-- **Store A** leads in revenue but shows the sharpest decline vs last month.
-- **Low Fat vs Regular** segmentation reveals outlet-specific preferences.
+- **Low Fat products** dominate in Tier 1 locations, while Regular Fat is more evenly distributed.
+- **Fresh Milk** is the top-selling item type, followed by Flavored Milk and Yogurt.
+- **Medium-sized outlets** contribute the highest percentage of total sales.
+- **KZN region** leads in sales volume, followed by WC and GP.
+- **Outlet Type 1** shows the highest average rating and item visibility.
 
 ---
 
 ## ✨ Lessons Learned
-- How to clean and standardize categorical data using SQL
-- Designing intuitive dashboards with conditional formatting and custom icons
-- Using Power Query to streamline transformations
-- Building storytelling visuals that guide business decisions
+- How to standardize categorical data using SQL CASE statements
+- Designing matrix cards and conditional formatting in Power BI
+- Using DAX to calculate dynamic KPIs and segment metrics
+- Building storytelling visuals that guide strategic decisions
 
 ---
+
 ## 👤 About Me
 
 I’m Anele, a BSc Applied Food & Tech graduate who pivoted into data analytics to solve real-world problems with precision and creativity. After completing a data analyst/scientist course, I delivered two end-to-end client projects using SQL, Excel, Power Query, and Power BI—transforming raw data into actionable dashboards. I’ve also built Python mini-projects for data cleaning and visualization.
 
 My passion lies in making insights beautiful and impactful. I blend technical logic with design aesthetics to create dashboards that not only inform but inspire action. I’m currently open to freelance roles and independent contracts where I can help businesses turn data into clarity.
 
+---
+
 ## 🔗 Connect With Me
 
 - **LinkedIn**: [Anele Promise Ndlovu](https://www.linkedin.com/in/anele-promise-ndlovu-6a8586277)  
 - **GitHub**: [Anele4](https://github.com/Anele4)
+```
+
+
+
+
