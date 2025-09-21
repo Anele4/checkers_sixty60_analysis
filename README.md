@@ -134,7 +134,7 @@ ORDER BY Total_Sales DESC;
 
 ## 👤 About Me
 
-I’m Anele, a BSc Applied Food & Tech graduate who pivoted into data analytics to solve real-world problems with precision and creativity. After completing a data analyst/scientist course, I delivered two end-to-end client projects using SQL, Excel, Power Query, and Power BI—transforming raw data into actionable dashboards. I’ve also built Python mini-projects for data cleaning and visualization.
+I’m Anele, a BSc Applied Food & Tech graduate who pivoted into data analytics to solve real-world problems with precision and creativity. After completing a data analyst/scientist course, I delivered end-to-end client projects using SQL, Excel, Power Query, and Power BI—transforming raw data into actionable dashboards. I’ve also built Python mini-projects for data cleaning and visualization.
 
 My passion lies in making insights beautiful and impactful. I blend technical logic with design aesthetics to create dashboards that not only inform but inspire action. I’m currently open to freelance roles and independent contracts where I can help businesses turn data into clarity.
 
