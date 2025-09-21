@@ -145,7 +145,3 @@ My passion lies in making insights beautiful and impactful. I blend technical lo
 - **LinkedIn**: [Anele Promise Ndlovu](https://www.linkedin.com/in/anele-promise-ndlovu-6a8586277)  
 - **GitHub**: [Anele4](https://github.com/Anele4)
 ```
-
-
-
-
